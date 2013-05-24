@@ -1,0 +1,10 @@
+[Dd]ebug
+[Rr]elease
+ipch/
+/OpenGLTest/[Dd]ebug
+/OpenGLTest/[Rr]elease
+*.user
+*.filters
+*.sou
+*.sdf
+*.opensdf
