@@ -6,6 +6,10 @@
 #include <windows.h>
 #include <gl\gl.h>
 #include <gl\glu.h>
+#include "stdio.h"
+#include "iostream"
+
+using namespace std;
 
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")
@@ -28,9 +32,15 @@ bool movingDown = FALSE;
 bool	keys[256];
 bool	active = TRUE;
 
+int frameCount;
+long int currentTime;
+long int previousTime;
+GLfloat fps;
+
 void axis(void);
 void drawBox(void);
 void moveBox(void);
+void calculateFps(void);
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -81,6 +91,8 @@ int DrawGLScene(GLvoid)
 
 	glPopMatrix();
 	glFlush();
+
+	calculateFps();
 
 	return TRUE;
 }
@@ -432,4 +444,23 @@ void drawBox(void) {
 	glVertex3f( -0.5, -0.5,  0.5 );
 	glVertex3f( -0.5, -0.5, -0.5 );
 	glEnd();
+}
+
+void calculateFps() {
+    frameCount++;
+    
+	SYSTEMTIME time;
+	GetSystemTime(&time);
+	currentTime = (time.wSecond * 1000) + time.wMilliseconds;
+
+	long unsigned int timeInterval = currentTime - previousTime;
+
+    if(timeInterval > 1000)
+    {
+        fps = frameCount / (timeInterval / 1000.0f);
+        previousTime = currentTime;
+        frameCount = 0;
+		
+		printf("%f", fps);
+    }
 }
