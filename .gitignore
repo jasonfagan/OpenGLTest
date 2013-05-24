@@ -8,3 +8,4 @@ ipch/
 *.sou
 *.sdf
 *.opensdf
+*.vcxproj
