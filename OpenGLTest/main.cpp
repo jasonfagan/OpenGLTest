@@ -20,11 +20,17 @@ GLfloat	rotate_y	= 45;
 GLfloat	rotate_z	= 45;
 GLfloat	zoom		= 50;
 
+bool movingRight = FALSE;
+bool movingleft = FALSE;
+bool movingUp = FALSE;
+bool movingDown = FALSE;
+
 bool	keys[256];
 bool	active = TRUE;
 
 void axis(void);
 void drawBox(void);
+void moveBox(void);
 
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -254,28 +260,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		{
 			keys[wParam] = TRUE;
 			if (wParam == VK_RIGHT)
-				rotate_y += 5.;
-			else if (wParam == VK_LEFT)
-				rotate_y -= 5.;
-			else if (wParam == VK_UP)
-				rotate_x += 5.;
-			else if (wParam == VK_DOWN)
-				rotate_x -= 5.;
-			else if (wParam == VK_HOME)
+				movingRight = TRUE;
+			if (wParam == VK_LEFT)
+				movingleft = TRUE;
+			if (wParam == VK_UP)
+				movingUp = TRUE;
+			if (wParam == VK_DOWN)
+				movingDown = TRUE;
+			if (wParam == VK_HOME)
 				rotate_z -= 5.;
-			else if (wParam == VK_END)
+			if (wParam == VK_END)
 				rotate_z += 5.;
-			else if (wParam == VK_ADD)
+			if (wParam == VK_ADD)
 				zoom -= 5.;
-			else if (wParam == VK_SUBTRACT)
+			if (wParam == VK_SUBTRACT)
 				zoom += 5.;
 
+			moveBox();
 			DrawGLScene();
 			return 0;
 		}
 
 		case WM_KEYUP:
 		{
+			if (wParam == VK_RIGHT)
+				movingRight = FALSE;
+			if (wParam == VK_LEFT)
+				movingleft = FALSE;
+			if (wParam == VK_UP)
+				movingUp = FALSE;
+			if (wParam == VK_DOWN)
+				movingDown = FALSE;
+
 			keys[wParam] = FALSE;
 			return 0;
 		}
@@ -288,6 +304,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+void moveBox (void) {
+	if(movingUp) {
+		rotate_x += 5.;
+	} if (movingDown) {
+		rotate_x -= 5.;
+	} if (movingleft) {
+		rotate_y -= 5.;
+	} if (movingRight) {
+		rotate_y += 5.;
+	} if (movingUp && movingleft) {
+		rotate_x += 5.;
+		rotate_y -= 5.;
+	} if (movingUp && movingRight) {
+		rotate_x += 5.;
+	} if (movingDown && movingleft) {
+		rotate_x -= 5.;
+		rotate_y -= 5.;
+	} if (movingDown &&  movingRight) {
+		rotate_x -= 5.;
+		rotate_y += 5.;
+	}
 }
 
 int WINAPI WinMain(	HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
